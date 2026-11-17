@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  role         String
+  clinicId     String?
+  clinic       Clinic?  @relation(fields: [clinicId], references: [id])
+  createdAt    DateTime @default(now())
+}
+
+model Clinic {
+  id          String        @id @default(cuid())
+  name        String
+  specialty  String
+  country     String        @default("EG")
+  city        String
+  phone       String?
+  status      String        @default("pending")
+  trialEndsAt DateTime?
+  users       User[]
+  patients    Patient[]
+  appointments Appointment[]
+  invoices    Invoice[]
+  createdAt   DateTime      @default(now())
+}
+
+model Patient {
+  id             String        @id @default(cuid())
+  clinicId       String
+  clinic         Clinic        @relation(fields: [clinicId], references: [id])
+  fullName       String
+  phone          String?
+  dateOfBirth    DateTime?
+  gender         String?
+  medicalHistory String?
+  notes          String?
+  appointments   Appointment[]
+  createdAt      DateTime      @default(now())
+}
+
+model Appointment {
+  id         String   @id @default(cuid())
+  clinicId   String
+  clinic     Clinic   @relation(fields: [clinicId], references: [id])
+  patientId  String
+  patient    Patient  @relation(fields: [patientId], references: [id])
+  doctorName String
+  date       DateTime
+  time       String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+}
+
+model Invoice {
+  id          String   @id @default(cuid())
+  clinicId    String
+  clinic      Clinic   @relation(fields: [clinicId], references: [id])
+  patientName String
+  amount      Float
+  status      String   @default("unpaid")
+  createdAt   DateTime @default(now())
+}

@@ -1,0 +1,16 @@
+{
+  "name": "clinic-saas-platform",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@clinic-saas/web",
+    "dev:api": "npm run dev --workspace=@clinic-saas/api",
+    "build": "npm run build --workspace=@clinic-saas/web && npm run build --workspace=@clinic-saas/api",
+    "lint": "npm run lint --workspace=@clinic-saas/web --if-present && npm run lint --workspace=@clinic-saas/api --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
